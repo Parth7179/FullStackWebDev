@@ -1,18 +1,22 @@
-const Course = ({course})=>{
-    var total_exercise = course.parts.reduce(function(sum,part){
-    return sum + part.exercises;
-  },0)
-    return(
-        <div>
-            <h1>{course.name}</h1>
-              <div>
-               {
-                course.parts.map(core  => <p key={core.id}>{core.name} {core.exercises}</p>)
-               }
-            </div>
-            <div> Total of {total_exercise} exercises </div>
-        </div>
-    )
+const Course = ({ course }) => {
+  const total_exercise = course.parts.reduce((sum, part) => {
+    console.log('sum:', sum, 'part:', part)
+    return sum + part.exercises
+  }, 0)
+
+  return (
+    <div>
+      <h1>{course.name}</h1>
+      <div>
+        {course.parts.map(core => (
+          <p key={core.id}>
+            {core.name} {core.exercises}
+          </p>
+        ))}
+      </div>
+      <div>Total of {total_exercise} exercises</div>
+    </div>
+  )
 }
 
 const App = () => {
@@ -35,16 +39,15 @@ const App = () => {
         exercises: 14,
         id: 3
       },
-       {
-          name: 'Redux',
-          exercises: 11,
-          id: 4
-        }
+      {
+        name: 'Redux',
+        exercises: 11,
+        id: 4
+      }
     ]
   }
 
   return <Course course={course} />
 }
-
 
 export default App
