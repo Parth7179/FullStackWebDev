@@ -1,4 +1,7 @@
 const Course = ({course})=>{
+    var total_exercise = course.parts.reduce(function(sum,part){
+    return sum + part.exercises;
+  },0)
     return(
         <div>
             <h1>{course.name}</h1>
@@ -7,6 +10,7 @@ const Course = ({course})=>{
                 course.parts.map(core  => <p key={core.id}>{core.name} {core.exercises}</p>)
                }
             </div>
+            <div> Total of {total_exercise} exercises </div>
         </div>
     )
 }
@@ -30,7 +34,12 @@ const App = () => {
         name: 'State of a component',
         exercises: 14,
         id: 3
-      }
+      },
+       {
+          name: 'Redux',
+          exercises: 11,
+          id: 4
+        }
     ]
   }
 
