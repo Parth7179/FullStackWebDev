@@ -1,21 +1,37 @@
-import { useState} from "react";
+import { useState } from "react";
 const App = () => {
-    const [good, setGood] = useState(0)
-    const [neutral, setNeutral] = useState(0)
-    const [bad, setBad] = useState(0)
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
+  const total = good+neutral+bad, average =0
 
-    return(
-        <div>
-            <h1>Give Feedback</h1>
-            <button onClick={()=>setGood(good+1)}>Good</button>
-            <button onClick={()=>setNeutral(neutral+1)}>Neutral</button>
-            <button onClick={()=>setBad(bad+1)}>Bad</button>
-            <h1>Statistics</h1>
-            <p>Good {good}</p>
-            <p>Neutral {neutral}</p>
-            <p>Bad {bad}</p>
-        </div>
+  const updateGood = () => {
+    const updated = good + 1;
+    setGood(updated);
+  };
 
-    )
-}
-export default App
+  const updateNeutral = () => {
+    const updated = neutral + 1;
+    setNeutral(updated);
+  };
+  const updateBad = () => {
+    const updated = bad + 1;
+    setBad(updated);
+  };
+  return (
+    <div>
+      <h1>Give Feedback</h1>
+      <button onClick={() => updateGood()}>Good</button>
+      <button onClick={() => updateNeutral()}>Neutral</button>
+      <button onClick={() => updateBad()}>Bad</button>
+      <h1>Statistics</h1>
+      <p>Good {good}</p>
+      <p>Neutral {neutral}</p>
+      <p>Bad {bad}</p>
+      <p>Total {good+bad+neutral}</p>
+      <p>Average {(good-bad)/total}</p>
+      <p>Positive {(good/total)*100}%</p>
+    </div>
+  );
+};
+export default App;
