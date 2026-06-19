@@ -6,16 +6,20 @@ const Person = ({person}) => {
 }
 const App = () => {
   const [persons, setPersons] = useState([{ name: 'Arto Hellas' }]) 
-  // const [newPerson, setNewPerson] = useState('')
   const [newName, setNewName] = useState('') 
 
   const addNewPerson = (event) =>{
     event.preventDefault()
-    const personObject = {
-      name: newName
+    const nameExists = persons.some(persons =>persons.name === newName)
+    if(nameExists){
+      alert(`${newName} already exists in phonebook.`)
+    }else{
+      const personObject = {
+        name: newName
+      }
+      setPersons(persons.concat(personObject))
+      setNewName('')
     }
-    setPersons(persons.concat(personObject))
-    setNewName('')
   }
   const handleChange = (event) => {
     setNewName(event.target.value)
@@ -33,7 +37,7 @@ const App = () => {
       </form>
       <h2>Numbers</h2>
       <ul>
-        {persons.map((person,i)=>(
+        {persons.map((person)=>(
           <Person key={person.name} person={person} />
         ))}
       </ul>
