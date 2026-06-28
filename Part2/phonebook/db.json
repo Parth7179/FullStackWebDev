@@ -16,11 +16,6 @@
       "id": "4"
     },
     {
-      "name": "hey",
-      "number": "112",
-      "id": "lLUPMb90C2A"
-    },
-    {
       "name": "Hello",
       "number": "232423",
       "id": "NwGjKk4s6uk"
@@ -34,6 +29,11 @@
       "name": "Person",
       "number": "232",
       "id": "SYtVURwWaF4"
+    },
+    {
+      "name": "ahm",
+      "number": "78678567",
+      "id": "KsdFlPFIosI"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
