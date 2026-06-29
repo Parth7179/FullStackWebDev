@@ -8,6 +8,7 @@ import Notification from "./components/Notification";
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [message, setMessage] = useState(null);
+  const [messageType, setMessageType] = useState(null);
 
   useEffect(() => {
     console.log("fetching");
@@ -42,7 +43,22 @@ const App = () => {
             setNewName("");
             setNewNumber("");
             setMessage(`Updated ${updatedPerson.name}`);
-            setTimeout(() => setMessage(null), 5000);
+            setMessageType("success");
+            setTimeout(() => {
+              setMessage(null);
+              setMessageType(null);
+            }, 5000);
+          })
+          .catch(() => {
+            setMessage(
+              `Information of ${changedPerson.name} is already been removed from the server`,
+            );
+            setMessageType("error");
+            setTimeout(() => {
+              setMessage(null);
+              setMessageType(null);
+            }, 5000);
+            setPersons(persons.filter(person => person.id !== changedPerson.id))
           });
       }
     } else {
@@ -55,7 +71,11 @@ const App = () => {
         setNewName("");
         setNewNumber("");
         setMessage(`Added ${newPerson.name}`);
-        setTimeout(() => setMessage(null), 5000);
+        setMessageType("success");
+        setTimeout(() => {
+          setMessage(null);
+          setMessageType(null);
+        }, 5000);
       });
     }
   };
@@ -80,7 +100,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={message} />
+      <Notification message={message} messageType={messageType} />
       <Filter handleFilter={handleFilter} />
 
       <h2>Add a new</h2>
