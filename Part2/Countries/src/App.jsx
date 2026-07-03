@@ -1,28 +1,31 @@
 import { useEffect, useState } from "react";
 import countryService from "./Services/countryService";
-import Countries from './Components/Countries'
-import Filter from './Components/Filter'
+import Countries from "./Components/Countries";
+import Filter from "./Components/Filter";
 const App = () => {
   const [countriesList, setCountriesList] = useState([]);
-  const [filterValue, setFilterValue] = useState('')
+  const [filterValue, setFilterValue] = useState("");
   useEffect(() => {
-    countryService
-    .getAll()
-    .then((countrydata) => {
+    countryService.getAll().then((countrydata) => {
       setCountriesList(countrydata);
     });
-   
   }, []);
-  
-  const handleFilter = (event) => {
-    setFilterValue(event.target.value)
-  }
 
+  const handleFilter = (event) => {
+    setFilterValue(event.target.value);
+  };
+  const showButton = (match) => {
+    setFilterValue(match.name.common);
+  };
   return (
     <div>
-      <Filter filterValue={filterValue} handleFilter = {handleFilter}/>
-      <Countries filterValue={filterValue} countriesList={countriesList} />
+      <Filter filterValue={filterValue} handleFilter={handleFilter} />
+      <Countries
+        filterValue={filterValue}
+        countriesList={countriesList}
+        showButton={showButton}
+      />
     </div>
-  )
+  );
 };
 export default App;
