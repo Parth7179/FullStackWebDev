@@ -48,6 +48,10 @@ app.post('/api/persons', (request, response)=>{
   if(!(body.name && body.number)){
     return response.status(400).json({'error':'content missing'})
   }
+  const alreadyExists = persons.find(person => person.name === body.name)
+  if(alreadyExists){
+    return response.status(400).json({'error': 'name already exists'})
+  }
   const newPerson = {
     id :generateId(),
     name : body.name,
