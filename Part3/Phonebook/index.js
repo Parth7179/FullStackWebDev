@@ -1,10 +1,14 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 app.use(express.json())
+app.use(morgan('tiny'))
+
+
 let persons = [
     { 
       "id": "1",
-      "name": "Arto Hellas", 
+      "name": "Arto Hellas",  
       "number": "040-123456"
     },
     { 
@@ -43,7 +47,6 @@ const generateId = () =>{
 }
 
 app.post('/api/persons', (request, response)=>{
-  console.log(request.body)
   const body = request.body
   if(!(body.name && body.number)){
     return response.status(400).json({'error':'content missing'})
