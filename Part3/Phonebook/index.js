@@ -36,9 +36,9 @@ app.get('/api/persons/:id', (request, response) => {
 })
 
 
-const generateId = () => {
-  return String(Math.floor(Math.random() * 1000000))
-}
+// const generateId = () => {
+//   return String(Math.floor(Math.random() * 1000000))
+// }
 
 app.post('/api/persons', (request, response) => {
   const body = request.body
@@ -46,36 +46,40 @@ app.post('/api/persons', (request, response) => {
   if (!(body.name && body.number)) {
     return response.status(400).json({ 'error': 'content missing' })
   }
+
   // const alreadyExists = person.find(person => person.name === body.name)
   // if (alreadyExists) {
   //   return response.status(400).json({ 'error': 'name already exists' })
   // }
 
-
-  const person =  new Person({
+  const person = new Person({
     name: body.name,
     number: body.number
   })
 
   person.save().then(result => {
-    console.log(`Added ${person.name} number ${person.number} to phonebook`);
-  
+    console.log(`Added ${result.name} number ${result.number} to phonebook`);
+    response.json(result)
+
   })
-  response.json(person)
 })
 
 app.delete('/api/persons/:id', (request, response) => {
-  const id = request.params.id
-  persons = persons.filter(person => person.id !== id)
-  response.status(204).end()
+  Person.findByIdAndDelete(request.params.id)
+    .then((result) => {
+      response.status(204).end()
+    })
 })
 
 
 app.get('/info', (request, response) => {
-  response.send(
-    `<p>Phonebook has info for ${persons.length} people</p>
+  Person.countDocuments({})
+    .then(count => {
+      response.send(
+        `<p>Phonebook has info for ${count} people</p>
     <p>${new Date()}</p>`
-  )
+      )
+    })
 })
 
 
