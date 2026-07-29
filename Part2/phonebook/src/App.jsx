@@ -58,7 +58,9 @@ const App = () => {
               setMessage(null);
               setMessageType(null);
             }, 5000);
-            setPersons(persons.filter(person => person.id !== changedPerson.id))
+            setPersons(
+              persons.filter((person) => person.id !== changedPerson.id),
+            );
           });
       }
     } else {
@@ -66,17 +68,28 @@ const App = () => {
         name: newName,
         number: newNumber,
       };
-      phoneService.create(personObject).then((newPerson) => {
-        setPersons(persons.concat(newPerson));
-        setNewName("");
-        setNewNumber("");
-        setMessage(`Added ${newPerson.name}`);
-        setMessageType("success");
-        setTimeout(() => {
-          setMessage(null);
-          setMessageType(null);
-        }, 5000);
-      });
+      phoneService
+        .create(personObject)
+        .then((newPerson) => {
+          setPersons(persons.concat(newPerson));
+          setNewName("");
+          setNewNumber("");
+          setMessage(`Added ${newPerson.name}`);
+          setMessageType("success");
+          setTimeout(() => {
+            setMessage(null);
+            setMessageType(null);
+          }, 5000);
+        })
+        .catch((error) => {
+          setMessage(error.response.data.error)
+          setMessageType('error')
+          setTimeout(()=>{
+            setMessage(null)
+            setMessageType(null)
+          },5000)
+          console.log(error.response.data.error);
+        });
     }
   };
 
