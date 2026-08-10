@@ -2,14 +2,6 @@ const { test, describe } = require('node:test')
 const assert = require('node:assert')
 const mostLikes = require('../utils/list_helper').mostLikes
 
-describe('most likes when', () => {
-  test('one blog', () => {
-    assert.deepStrictEqual(mostLikes(listWithOneBlog), { author: 'Edsger W. Dijkstra', likes: 5 })
-  })
-  test('multiple blogs', () => {
-    assert.deepStrictEqual(mostLikes(blogs), { author: 'Edsger W. Dijkstra', likes: 12 })
-  })
-})
 
 
 const blogs = [
@@ -72,3 +64,12 @@ const listWithOneBlog = [
     __v: 0
   }
 ]
+
+describe('most likes when', () => {
+  test('one blog', () => {
+    assert.deepStrictEqual(mostLikes(listWithOneBlog), { author: 'Edsger W. Dijkstra', likes: 5 })
+  })
+  test('multiple blogs', () => {
+    assert.deepStrictEqual(mostLikes(blogs), { author: 'Edsger W. Dijkstra', likes: 17 })
+  })
+})

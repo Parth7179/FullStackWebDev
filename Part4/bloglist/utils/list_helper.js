@@ -40,11 +40,15 @@ const mostBlogs = (blogs) => {
 }
 
 const mostLikes = (blogs) => {
-  const mostLikes = Math.max(...blogs.map(b => b.likes))
-  const mostLikedBlog = blogs.find(blog => blog.likes === mostLikes)
+  const author = {}
+  blogs.forEach(blog => {
+    author[blog.author] = (author[blog.author] || 0) + blog.likes
+  })
+  const maxLikes = Math.max(...Object.values(author))
+  const mostLikedAuthor = Object.keys(author).find(key => author[key] === maxLikes)
   return {
-    author: mostLikedBlog.author,
-    likes: mostLikedBlog.likes
+    author: mostLikedAuthor,
+    likes: maxLikes
   }
 }
 
