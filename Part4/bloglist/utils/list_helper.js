@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 const dummy = (blogs) => {
   return 1
 }
@@ -11,4 +12,15 @@ const totalLikes = (blogs) => {
     : blogs.reduce(likes,0)
 }
 
-module.exports = { dummy , totalLikes }
+const favBlog = (blogs) => {
+  let fav = blogs[0]
+  blogs.forEach(blog => {
+    if(blog.likes > fav.likes){
+      fav = blog
+    }
+  })
+  return fav
+}
+
+
+module.exports = { dummy , totalLikes, favBlog }
