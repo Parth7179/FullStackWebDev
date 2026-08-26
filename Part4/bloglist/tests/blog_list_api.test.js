@@ -30,6 +30,27 @@ test('verify id', async () => {
   })
 
 })
+test('post is created and no of posts are correcr', async () => {
+  const newBlog = {
+    title: 'abc',
+    author: 'PPPP',
+    url: 'testblog.com',
+    likes: 123
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/ )
+
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
+
+  const blogTitles = blogsAtEnd.map(blog => blog.title)
+  assert(blogTitles.includes('abc'))
+
+})
 
 
 after(async () => {
