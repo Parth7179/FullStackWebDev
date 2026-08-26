@@ -52,6 +52,22 @@ test('post is created and no of posts are correcr', async () => {
 
 })
 
+test('missing like property', async () => {
+  const newBlog = {
+    title: 'abc',
+    author: 'PPPP',
+    url: 'testblog.com',
+  }
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/ )
+  const blogs = await helper.blogsInDb()
+  const blog = blogs.find(blog => blog.title === 'abc')
+  assert.strictEqual(blog.likes,0)
+})
+
 
 after(async () => {
   await mongoose.connection.close()
