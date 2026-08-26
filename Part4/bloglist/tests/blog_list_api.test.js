@@ -67,6 +67,21 @@ test('missing like property', async () => {
   const blog = blogs.find(blog => blog.title === 'abc')
   assert.strictEqual(blog.likes,0)
 })
+test('Blog without title/url is not created', async () => {
+  const newBlog = {
+    author: 'PPPP',
+    url: 'testblog.com',
+    likes: 12
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+
+  const blogsAfterFailedPost = await helper.blogsInDb()
+  assert.strictEqual(blogsAfterFailedPost.length, helper.initialBlogs.length)
+})
 
 
 after(async () => {
