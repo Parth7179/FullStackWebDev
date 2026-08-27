@@ -98,6 +98,25 @@ test('successful deletion of a blog with 204', async () => {
   assert(!ids.includes(blogToDelete.id))
 })
 
+test('updating blog with 200', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const blogToUpdate = blogsAtStart[0]
+  const newBlog = {
+    title: 'updated',
+    author: 'whoknows',
+    url: 'testurl.com',
+    likes: 3454
+  }
+  await api
+    .put(`/api/blogs/${blogToUpdate.id}`)
+    .send(newBlog)
+    .expect(200)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  const titles = blogsAtEnd.map(b => b.title)
+  assert(titles.includes('updated') && (!titles.includes('2Blog')))
+})
+
 
 after(async () => {
   await mongoose.connection.close()
