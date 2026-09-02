@@ -118,6 +118,25 @@ describe('when there is initially a user created', () => {
     assert.strictEqual(usersAtStart.length+1, usersAtEnd.length)
   })
 
+  test('user contains their blogs', async () => {
+    const newBlog = {
+      title: 'updated',
+      author: 'whoknows',
+      url: 'testurl.com',
+      likes: 3454
+    }
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+
+    const response = await api
+      .get('/api/users')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    assert.ok(response.body[0].blogs[0])
+  })
+
   after(async () => {
     mongoose.connection.close()
   })

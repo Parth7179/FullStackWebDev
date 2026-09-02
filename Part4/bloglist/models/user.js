@@ -11,8 +11,11 @@ const userSchema = mongoose.Schema({
   passwordHash: {
     type: String,
     required: true,
-  }
-  // Blog ids will be included in next Exericise
+  },
+  blogs: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref:'Blog',
+  }]
 })
 
 userSchema.set('toJSON',{

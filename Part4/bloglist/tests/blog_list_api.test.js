@@ -117,6 +117,28 @@ test('updating blog with 200', async () => {
   assert(titles.includes('updated') && (!titles.includes('2Blog')))
 })
 
+test('blog contains users information', async () => {
+  const newBlog = {
+    title: 'updated',
+    author: 'whoknows',
+    url: 'testurl.com',
+    likes: 3454
+  }
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const blogs = await api
+    .get('/api/blogs')
+    .expect(200)
+  const blog = blogs.body.find(blog => blog.title === 'updated')
+
+  assert.ok(blog.user)
+  assert.ok(blog.user.username)
+})
+
 
 after(async () => {
   await mongoose.connection.close()
