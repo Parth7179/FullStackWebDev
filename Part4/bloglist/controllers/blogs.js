@@ -1,34 +1,31 @@
 const blogRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
-// const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken')
 
 blogRouter.get('/', async (request, response) => {
   const Bloglist = await Blog.find({}).populate('user', '-blogs' )
   response.status(200).json(Bloglist)
 })
 
-// const getTokenFrom = request => {
-//   const authorization = request.get('authorization')
-//   if(authorization && authorization.startsWith('Bearer ')){
-//     return authorization.replace('Bearer ', '')
-//   }
-//   return null
-// }
+const getTokenFrom = request => {
+  const authorization = request.get('authorization')
+  if(authorization && authorization.startsWith('Bearer ')){
+    return authorization.replace('Bearer ', '')
+  }
+  return null
+}
 
 blogRouter.post('/', async (request, response) => {
   const blogData = request.body
 
-  //implemented exercise 4.19 in 4.18 so commenting out that part
+  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  if(!decodedToken.id){
+    return response.status(401).json({ error:'invalid token' })
+  }
 
-  // const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
-  // if(!decodedToken.id){
-  //   return response.status(401).json({ error:'invalid token' })
-  // }
+  const user = await User.findById(decodedToken.id)
 
-
-  // const user = await User.findById(decodedToken.id)
-  const user = await User.findOne({})
   if(!user){
     return response.status(400).json({ error:'User id missing or invalid' })
   }
