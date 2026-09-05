@@ -20,7 +20,7 @@ blogRouter.post('/', async (request, response) => {
   const user = await User.findById(decodedToken.id)
 
   if(!user){
-    return response.status(400).json({ error:'User id missing or invalid' })
+    return response.status(401).json({ error:'User id missing or invalid' })
   }
   if(!blogData || blogData.title === undefined || blogData.url === undefined){
     return response.status(400).end()
@@ -36,9 +36,31 @@ blogRouter.post('/', async (request, response) => {
 })
 
 blogRouter.delete('/:id', async (request, response) => {
-  await Blog.findByIdAndDelete(request.params.id)
-  response.status(204).end()
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
+  if(!decodedToken){
+    return response.status(401).json({ error:'invalid token' })
+  }
+
+  const userId = decodedToken.id
+
+  if(!userId){
+    return response.status(401).json({ error:'user id missing or invalid' })
+  }
+
+  const blog = await Blog.findById(request.params.id)
+  if(!blog){
+    return response.status(404).end()
+  }
+
+  if(blog.user.toString() === userId.toString()){
+    await Blog.findByIdAndDelete(blog.id)
+    return response.status(204).end()
+  }
+  return response.status(403).json({ error:'Deleting someone else blog' })
+
+
 })
+
 
 blogRouter.put('/:id', async (request, response) => {
   const { title, author, url, likes } = request.body
