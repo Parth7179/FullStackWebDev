@@ -119,14 +119,24 @@ describe('when there is initially a user created', () => {
   })
 
   test('user contains their blogs', async () => {
+
+    const res = await api
+      .post('/api/login')
+      .send({ username: 'test', password: 'password' })
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
     const newBlog = {
       title: 'updated',
       author: 'whoknows',
       url: 'testurl.com',
       likes: 3454
     }
+
+    const token = res.body.token
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(201)
 

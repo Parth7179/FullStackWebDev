@@ -2,9 +2,11 @@ const jwt = require('jsonwebtoken')
 const User = require('../models/user')
 
 const errorHandler = (error, request, response, next) => {
-  if(error.name === 'MongoServerError' && error.code === 11000)
+  if(error.name === 'MongoServerError' && error.code === 11000){
     return response.status(400).json( { error: 'expected `username` to be unique' })
-  else if(error.name === 'JsonWebTokenError') {
+  }else if( error.name === 'TokenExpiredError'){
+    return response.status(401).json({ error: 'Token Expired ' })
+  }else if(error.name === 'JsonWebTokenError') {
     return response.status(401).json({ error:'invalid token' })
   }
 
