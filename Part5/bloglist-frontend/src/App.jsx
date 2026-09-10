@@ -95,7 +95,7 @@ const App = () => {
           setAuthor('')
           setUrl('')
           setTitle('')
-          setMessage('Blog created!')
+          setMessage(`a new blog "${newBlog.title}" by ${newBlog.author} is added!`)
           setMessageType('success')
           setTimeout(() => {
             setMessage(null)
@@ -147,6 +147,7 @@ const App = () => {
   return (
     <div>
       <p>{user.name} is logged in <button onClick={() => handleLogout()}>logout</button> </p>
+      <Notification message = {message} messageType={messageType}/>
       <BlogForm 
         addNewBlog = {addNewBlog}
         title = {title}
