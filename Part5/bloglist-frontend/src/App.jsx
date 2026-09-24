@@ -58,45 +58,55 @@ const App = () => {
     window.localStorage.removeItem("loggedBlogUser")
   }
 
+  const addNewLike = (blogObject) => {
+    blogService
+      .likeBlog(blogObject)
+      .then((res) => {
+        setBlogs(
+          blogs.map((blog) => (blog.id === res.id ? (blog = res) : blog)),
+        )
+      })
+      .catch((error) => {
+        setMessage(error.response.data.error)
+        setMessageType("error")
+        setTimeout(() => {
+          setMessage(null)
+          setMessageType(null)
+        }, 5000)
+        console.log(error.response.data.error)
+      })
+  }
 
   const addNewBlog = (blogObject) => {
-    if (
-      blogObject.title === "" ||
-      blogObject.author === "" ||
-      blogObject.url === ""
-    ) {
-      alert("Fill all the details")
-    } else {
-      blogFormRef.current.toggleVisibility()
-      blogService
-        .createBlog(blogObject)
-        .then((res) => {
-          setBlogs(blogs.concat(res))
-          setMessage(
-            `a new blog "${blogObject.title}" by ${blogObject.author} is added!`,
-          )
-          setMessageType("success")
-          setTimeout(() => {
-            setMessage(null)
-            setMessageType(null)
-          }, 5000)
-        })
-        .catch((error) => {
-          setMessage(error.response.data.error)
-          setMessageType("error")
-          setTimeout(() => {
-            setMessage(null)
-            setMessageType(null)
-          }, 5000)
-          console.log(error.response.data.error)
-        })
-    }
+    blogFormRef.current.toggleVisibility()
+    blogService
+      .createBlog(blogObject)
+      .then((res) => {
+        setBlogs(blogs.concat(res))
+        setMessage(
+          `a new blog "${blogObject.title}" by ${blogObject.author} is added!`,
+        )
+        setMessageType("success")
+        setTimeout(() => {
+          setMessage(null)
+          setMessageType(null)
+        }, 5000)
+      })
+      .catch((error) => {
+        setMessage(error.response.data.error)
+        setMessageType("error")
+        setTimeout(() => {
+          setMessage(null)
+          setMessageType(null)
+        }, 5000)
+        console.log(error.response.data.error)
+      })
   }
 
   const blogFormRef = useRef()
   const blogForm = () => {
     return (
-      <Togglable buttonLabel='Create new Blog' ref = {blogFormRef}>
+      <Togglable buttonLabel='Create new Blog' ref={blogFormRef}>
         <BlogForm createBlog={addNewBlog} />
       </Togglable>
     )
@@ -147,7 +157,7 @@ const App = () => {
       )}
       <h2>blogs</h2>
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} addNewLike={addNewLike} />
       ))}
     </div>
   )
