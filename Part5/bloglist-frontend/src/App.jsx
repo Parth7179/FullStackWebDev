@@ -15,7 +15,7 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then((blogs) => {
-      blogs.sort((a,b) => b.likes - a.likes)
+      blogs.sort((a, b) => b.likes - a.likes)
       setBlogs(blogs)
     })
   }, [])
@@ -68,7 +68,7 @@ const App = () => {
         setBlogs(
           blogs
             .map((blog) => (blog.id === res.id ? res : blog))
-            .sort((a,b) => b.likes - a.likes)
+            .sort((a, b) => b.likes - a.likes),
         )
       })
       .catch((error) => {
@@ -96,6 +96,22 @@ const App = () => {
           setMessage(null)
           setMessageType(null)
         }, 5000)
+      })
+      .catch((error) => {
+        setMessage(error.response.data.error)
+        setMessageType("error")
+        setTimeout(() => {
+          setMessage(null)
+          setMessageType(null)
+        }, 5000)
+        console.log(error.response.data.error)
+      })
+  }
+  const deleteBlogReq = (blogObject) => {
+    blogService
+      .deleteBlog(blogObject.id)
+      .then(() => {
+       setBlogs(blogs.filter(blog => blog.id!==blogObject.id))
       })
       .catch((error) => {
         setMessage(error.response.data.error)
@@ -162,7 +178,12 @@ const App = () => {
       )}
       <h2>blogs</h2>
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} addNewLike={addNewLike} />
+        <Blog
+          key={blog.id}
+          blog={blog}
+          addNewLike={addNewLike}
+          deleteBlogReq={deleteBlogReq}
+        />
       ))}
     </div>
   )

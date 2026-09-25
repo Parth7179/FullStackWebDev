@@ -1,5 +1,5 @@
 import { useState } from "react"
-const Blog = ({ blog, addNewLike }) => {
+const Blog = ({ blog, addNewLike, deleteBlogReq }) => {
   const [visible, setVisible] = useState(false)
 
   const hideWhenVisible = { display: visible ? "none" : "" }
@@ -18,6 +18,15 @@ const Blog = ({ blog, addNewLike }) => {
     addNewLike({...blog,likes: blog.likes+1})
   }
 
+  const deleteBlog = (event) => {
+    event.preventDefault()
+    const conf = confirm(`Remove blog '${blog.title}'?`)
+    if(conf){
+      console.log(blog)
+      deleteBlogReq(blog)
+    }
+  }
+
   return (
     <div style={blogStyle}>
       <div style={hideWhenVisible}>
@@ -30,6 +39,7 @@ const Blog = ({ blog, addNewLike }) => {
         {blog.url} <br />
         Likes {blog.likes} <button onClick={addLike}>Like</button> <br />
         {blog.author} <br />
+        <button onClick={deleteBlog}>Remove</button>
       </div>
     </div>
   )
