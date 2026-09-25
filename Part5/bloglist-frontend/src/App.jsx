@@ -1,17 +1,17 @@
-import { useState, useEffect, useRef } from "react"
-import Blog from "./components/Blog"
-import blogService from "./services/blogs"
-import loginService from "./services/login"
-import BlogForm from "./components/BlogForm"
-import Togglable from "./components/Togglable"
+import { useState, useEffect, useRef } from 'react'
+import Blog from './components/Blog'
+import blogService from './services/blogs'
+import loginService from './services/login'
+import BlogForm from './components/BlogForm'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [message, setMessage] = useState(null)
   const [messageType, setMessageType] = useState(null)
   const [user, setUser] = useState(null)
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
 
   useEffect(() => {
     blogService.getAll().then((blogs) => {
@@ -21,7 +21,7 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    const loggedBlogJSON = window.localStorage.getItem("loggedBlogUser")
+    const loggedBlogJSON = window.localStorage.getItem('loggedBlogUser')
     if (loggedBlogJSON) {
       const user = JSON.parse(loggedBlogJSON)
       setUser(user)
@@ -41,14 +41,14 @@ const App = () => {
     event.preventDefault()
     try {
       const user = await loginService.login({ username, password })
-      window.localStorage.setItem("loggedBlogUser", JSON.stringify(user))
+      window.localStorage.setItem('loggedBlogUser', JSON.stringify(user))
       blogService.setToken(user.token)
       setUser(user)
-      setUsername("")
-      setPassword("")
+      setUsername('')
+      setPassword('')
     } catch {
-      setMessage("Wrong Credentials")
-      setMessageType("error")
+      setMessage('Wrong Credentials')
+      setMessageType('error')
       setTimeout(() => {
         setMessage(null)
         setMessageType(null)
@@ -58,7 +58,7 @@ const App = () => {
   const handleLogout = () => {
     setUser(null)
     blogService.setToken(null)
-    window.localStorage.removeItem("loggedBlogUser")
+    window.localStorage.removeItem('loggedBlogUser')
   }
 
   const addNewLike = (blogObject) => {
@@ -73,7 +73,7 @@ const App = () => {
       })
       .catch((error) => {
         setMessage(error.response.data.error)
-        setMessageType("error")
+        setMessageType('error')
         setTimeout(() => {
           setMessage(null)
           setMessageType(null)
@@ -91,7 +91,7 @@ const App = () => {
         setMessage(
           `a new blog "${blogObject.title}" by ${blogObject.author} is added!`,
         )
-        setMessageType("success")
+        setMessageType('success')
         setTimeout(() => {
           setMessage(null)
           setMessageType(null)
@@ -99,7 +99,7 @@ const App = () => {
       })
       .catch((error) => {
         setMessage(error.response.data.error)
-        setMessageType("error")
+        setMessageType('error')
         setTimeout(() => {
           setMessage(null)
           setMessageType(null)
@@ -111,11 +111,11 @@ const App = () => {
     blogService
       .deleteBlog(blogObject.id)
       .then(() => {
-       setBlogs(blogs.filter(blog => blog.id!==blogObject.id))
+        setBlogs(blogs.filter(blog => blog.id!==blogObject.id))
       })
       .catch((error) => {
         setMessage(error.response.data.error)
-        setMessageType("error")
+        setMessageType('error')
         setTimeout(() => {
           setMessage(null)
           setMessageType(null)
@@ -172,7 +172,7 @@ const App = () => {
       {!user && loginForm()}
       {user && (
         <div>
-          {user.name} is logged in{" "}
+          {user.name} is logged in{' '}
           <button onClick={() => handleLogout()}>logout</button> {blogForm()}
         </div>
       )}

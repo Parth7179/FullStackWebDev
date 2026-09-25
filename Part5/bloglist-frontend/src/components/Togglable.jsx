@@ -1,6 +1,6 @@
-import { useState, useImperativeHandle } from "react";
+import { useState, useImperativeHandle } from 'react'
 
-const Togglable = ({ref, ...props}) => {
+const Togglable = ({ ref, ...props }) => {
   const [visible, setVisible] = useState(false)
 
   const hideWhenVisible = { display: visible? 'none' : '' }
@@ -11,7 +11,7 @@ const Togglable = ({ref, ...props}) => {
   }
 
   useImperativeHandle(ref, () => {
-    return {toggleVisibility}
+    return { toggleVisibility }
   })
 
   return(

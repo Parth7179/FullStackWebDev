@@ -1,24 +1,24 @@
-import { useState } from "react"
+import { useState } from 'react'
 const BlogForm = ({ createBlog }) => {
-  const [title, setTitle] = useState("")
-  const [author, setAuthor] = useState("")
-  const [url, setUrl] = useState("")
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
   const addNewBlog = (event) => {
     event.preventDefault()
-    if (title === "" || author === "" || url === "") {
-      alert("Fill all the details")
+    if (title === '' || author === '' || url === '') {
+      alert('Fill all the details')
       return
     }
-      createBlog({
-        title: title,
-        author: author,
-        url: url,
-      })
-      setTitle("")
-      setAuthor("")
-      setUrl("")
-    
+    createBlog({
+      title: title,
+      author: author,
+      url: url,
+    })
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+
   }
   return (
     <form onSubmit={addNewBlog}>

@@ -1,21 +1,21 @@
-import { useState } from "react"
+import { useState } from 'react'
 const Blog = ({ blog, addNewLike, deleteBlogReq }) => {
   const [visible, setVisible] = useState(false)
 
-  const hideWhenVisible = { display: visible ? "none" : "" }
-  const showWhenVisible = { display: visible ? "" : "none" }
+  const hideWhenVisible = { display: visible ? 'none' : '' }
+  const showWhenVisible = { display: visible ? '' : 'none' }
 
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
-    border: "solid",
+    border: 'solid',
     borderWidth: 1,
     marginBottom: 5,
   }
 
   const addLike = (event) => {
     event.preventDefault()
-    addNewLike({...blog,likes: blog.likes+1})
+    addNewLike({ ...blog,likes: blog.likes+1 })
   }
 
   const deleteBlog = (event) => {
