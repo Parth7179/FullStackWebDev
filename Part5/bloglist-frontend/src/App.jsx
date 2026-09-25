@@ -14,7 +14,10 @@ const App = () => {
   const [password, setPassword] = useState("")
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs))
+    blogService.getAll().then((blogs) => {
+      blogs.sort((a,b) => b.likes - a.likes)
+      setBlogs(blogs)
+    })
   }, [])
 
   useEffect(() => {
@@ -63,7 +66,9 @@ const App = () => {
       .likeBlog(blogObject)
       .then((res) => {
         setBlogs(
-          blogs.map((blog) => (blog.id === res.id ? (blog = res) : blog)),
+          blogs
+            .map((blog) => (blog.id === res.id ? res : blog))
+            .sort((a,b) => b.likes - a.likes)
         )
       })
       .catch((error) => {
