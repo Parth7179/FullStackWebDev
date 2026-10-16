@@ -7,6 +7,7 @@ const blogRouter  = require('./controllers/blogs')
 const userRouter = require('./controllers/users')
 const middleware = require('./utils/middleware')
 const loginRouter = require('./controllers/login')
+const cors = require('cors')
 
 
 const app = express()
@@ -20,6 +21,7 @@ mongoose
     console.error('error connecting to MongoDB : ', error.message)
   })
 app.use(express.json())
+app.use(cors())
 app.use(middleware.tokenExtractor)
 app.use('/api/login', loginRouter)
 app.use('/api/blogs', blogRouter)
