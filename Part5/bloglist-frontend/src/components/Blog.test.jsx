@@ -10,7 +10,10 @@ describe('<Blog />', () => {
       url:'https://',
       likes:0,
     }
-    render( <Blog blog={blog}/>)
+
+    const addNewLike = vi.fn()
+
+    render( <Blog blog={blog} addNewLike={addNewLike}/>)
   })
 
   test('Blogs title and author are visible but lik and url are not', () => {
@@ -28,7 +31,6 @@ describe('<Blog />', () => {
   })
 
   test('Blogs like and url is only visible after button is clicked', async () => {
-    const user = userEvent.setup()
 
     const url = screen.getByText(/https:/)
     expect(url).not.toBeVisible()
@@ -36,7 +38,7 @@ describe('<Blog />', () => {
     const likes = screen.getByText(/Likes/)
     expect(likes).not.toBeVisible()
 
-
+    const user = userEvent.setup()
     const viewButton = screen.getByText('View')
     await user.click(viewButton)
 
@@ -44,5 +46,26 @@ describe('<Blog />', () => {
     expect(likes).toBeVisible()
 
   })
+})
+test('like button clicked twice', async() => {
 
+  const blog = {
+    title:'hey',
+    author:'heyo',
+    url:'https://',
+    likes:0,
+  }
+
+  const addNewLike = vi.fn()
+  render( <Blog blog={blog} addNewLike={addNewLike}/>)
+
+  const user = userEvent.setup()
+  const viewButton = screen.getByText('View')
+  await user.click(viewButton)
+
+
+  const LikeButton = screen.getByText('Like')
+  await user.click(LikeButton)
+  await user.click(LikeButton)
+  expect(addNewLike.mock.calls).toHaveLength(2)
 })
