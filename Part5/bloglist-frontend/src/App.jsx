@@ -136,7 +136,6 @@ const App = () => {
     return (
       <div>
         <h2>Login to Application</h2>
-        <Notification message={message} messageType={messageType} />
         <form onSubmit={handleLogin}>
           <div>
             <label>
