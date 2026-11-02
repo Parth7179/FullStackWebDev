@@ -29,7 +29,7 @@ const Blog = ({ blog, addNewLike, deleteBlogReq, user }) => {
   const blogOwner = user && user.id === blog.user.id
 
   return (
-    <div style={blogStyle}>
+    <div className='blog' style={blogStyle}>
       <div style={hideWhenVisible}>
         {blog.title} {blog.author}
         <button onClick={() => setVisible(true)}>View</button>

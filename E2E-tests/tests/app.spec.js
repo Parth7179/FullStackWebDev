@@ -78,5 +78,23 @@ describe('Blog app', () => {
 
 
     })
+
+    test('blogs are arranged in order according to the likes', async ({ page }) => {
+      await createNote(page, 'test title1', 'test author1', 'http://testurl.com1')
+      await createNote(page, 'test title2', 'test author2', 'http://testurl.com1')
+
+      const blogElement = page.locator('.blog')
+      await expect(blogElement.first()).toContainText('test title1 test author1')
+      await expect(blogElement.nth(1)).toContainText('test title2 test author2')
+
+      await blogElement.nth(1).getByRole('button', {name: 'View'}).click()
+      await expect(blogElement.nth(1).getByText(/Likes 0/)).toBeVisible()
+      await blogElement.nth(1).getByRole('button', {name: 'Like'}).click()
+      await expect(blogElement.first().getByText(/Likes 1/)).toBeVisible()
+
+      await expect(blogElement.first()).toContainText('test title2 test author2')
+      await expect(blogElement.nth(1)).toContainText('test title1 test author1')
+
+    })
   })
 })
