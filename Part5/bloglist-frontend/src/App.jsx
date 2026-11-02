@@ -182,6 +182,7 @@ const App = () => {
           blog={blog}
           addNewLike={addNewLike}
           deleteBlogReq={deleteBlogReq}
+          user = {user}
         />
       ))}
     </div>

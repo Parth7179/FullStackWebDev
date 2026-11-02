@@ -11,7 +11,13 @@ describe('Blog app', () => {
         password: 'testUser1',
       }
     })
-
+    await request.post('/api/users', {
+      data: {
+        name: 'testUser2',
+        username: 'testUser2',
+        password: 'testUser2',
+      }
+    })
 
     await page.goto('/') // using baseUrl from playwright config.js
   })
@@ -53,6 +59,24 @@ describe('Blog app', () => {
       await expect(page.getByText(/Likes 0/)).toBeVisible()
       await page.getByRole('button', { name: 'Like' }).click()
       await expect(page.getByText(/Likes 1/)).toBeVisible()
+    })
+
+    test('blog can only be removed by its owner', async({ page }) => {
+      // blog post by testUser1
+      await createNote(page, 'test title1', 'test author1', 'http://testurl.com1')
+      await createNote(page, 'test title2', 'test author2', 'http://testurl.com1')
+
+      await page.getByText('test title1 test author1').getByRole('button', {name: 'view'}).click()
+      await page.getByRole('button',{name: 'Remove'}).click()
+      await expect(page.getByText('test title1 test author1')).not.toBeVisible()
+
+      await page.getByRole('button', {name: 'logout'}).click()
+      await loginWith(page, 'testUser2', 'testUser2')
+
+      await page.getByText('test title2 test author2').getByRole('button', {name: 'view'}).click()
+      await expect(page.getByRole('button', {name: 'Remove'})).not.toBeVisible()
+
+
     })
   })
 })
