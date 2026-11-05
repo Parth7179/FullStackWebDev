@@ -1,8 +1,9 @@
 import { useState,useRef } from 'react'
+import { Link } from 'react-router-dom'
+
 import Togglable from './Togglable'
 import Notification from './Notification'
 import BlogForm from './BlogForm'
-import Blog from './Blog'
 import blogService from '../services/blogs'
 
 const BlogList = ({ user, blogs, setBlogs }) => {
@@ -44,51 +45,8 @@ const BlogList = ({ user, blogs, setBlogs }) => {
   }
 
 
-  const addNewLike = (blogObject) => {
-    blogService
-      .likeBlog(blogObject)
-      .then((res) => {
-        setBlogs(
-          blogs
-            .map((blog) => (blog.id === res.id ? res : blog))
-            .sort((a, b) => b.likes - a.likes),
-        )
-      })
-      .catch((error) => {
-        setMessage(error.response.data.error)
-        setMessageType('error')
-        setTimeout(() => {
-          setMessage(null)
-          setMessageType(null)
-        }, 5000)
-        console.log(error.response.data.error)
-      })
-  }
 
-  const deleteBlogReq = (blogObject) => {
-    blogService
-      .deleteBlog(blogObject.id)
-      .then(() => {
-        setBlogs(blogs.filter(blog => blog.id!==blogObject.id))
-        setMessage(
-          `"${blogObject.title}" by ${blogObject.author} is Removed!`,
-        )
-        setMessageType('success')
-        setTimeout(() => {
-          setMessage(null)
-          setMessageType(null)
-        }, 5000)
-      })
-      .catch((error) => {
-        setMessage(error.response.data.error)
-        setMessageType('error')
-        setTimeout(() => {
-          setMessage(null)
-          setMessageType(null)
-        }, 5000)
-        console.log(error.response.data.error)
-      })
-  }
+
 
 
 
@@ -105,14 +63,11 @@ const BlogList = ({ user, blogs, setBlogs }) => {
       )}
       <h2>blogs</h2>
       {blogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          addNewLike={addNewLike}
-          deleteBlogReq={deleteBlogReq}
-          user = {user}
-        />
-      ))}
+        <li key={blog.id}>
+          <Link to={`/blogs/${blog.id}`}>{blog.title} by {blog.author}</Link>
+        </li>
+      )
+      )}
     </div>
   )
 }

@@ -1,19 +1,27 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import Notification from './Notification'
 const Blog = ({ blog, addNewLike, deleteBlogReq, user }) => {
-  const [visible, setVisible] = useState(false)
-
-  const hideWhenVisible = { display: visible ? 'none' : '' }
-  const showWhenVisible = { display: visible ? '' : 'none' }
+  const navigate = useNavigate()
+  const [message, setMessage] = useState(null)
+  const [messageType, setMessageType] = useState(null)
 
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
     marginBottom: 5,
   }
 
   const addLike = (event) => {
+    if(!user){
+      setMessage('Please Login in first!')
+      setMessageType('error')
+      setTimeout(() => {
+        setMessage(null)
+        setMessageType(null)
+      }, 5000)
+      return
+    }
     event.preventDefault()
     addNewLike({ ...blog,likes: blog.likes+1 })
   }
@@ -24,26 +32,25 @@ const Blog = ({ blog, addNewLike, deleteBlogReq, user }) => {
     if(conf){
       console.log(blog)
       deleteBlogReq(blog)
+      navigate('/')
     }
   }
-  const blogOwner = user && user.id === blog.user.id
-
+  if(!blog){
+    return null
+  }
+  const blogOwner = user && blog.user && user.id === (blog.user.id || blog.user)
+  console.log(blog)
   return (
     <div className='blog' style={blogStyle}>
-      <div style={hideWhenVisible}>
-        {blog.title} {blog.author}
-        <button onClick={() => setVisible(true)}>View</button>
-      </div>
-      <div style={showWhenVisible}>
-        {blog.title} <button onClick={() => setVisible(false)}>Hide</button>
-        <br />
-        {blog.url} <br />
-        Likes {blog.likes} <button onClick={addLike}>Like</button> <br />
-        {blog.author} <br />
-        { blogOwner &&
-        <button onClick={deleteBlog}>Remove</button>
-        }
-      </div>
+      <Notification message={message} messageType={messageType} />
+
+      <h3> {blog.author}: {blog.title} </h3>
+      <a href={blog.url}>{blog.url}</a> <br />
+      Likes {blog.likes} <button onClick={addLike}>Like</button> <br />
+      Added by {blog.author} <br />
+      { blogOwner &&
+      <button onClick={deleteBlog}>Remove</button>
+      }
     </div>
   )
 }

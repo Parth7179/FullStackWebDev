@@ -1,12 +1,19 @@
 import { useState, useEffect } from 'react'
 import blogService from './services/blogs'
 import BlogList from './components/BlogList'
+import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import Notification from './components/Notification'
+import { BrowserRouter as Router, Routes, Route, Link, useMatch, useNavigate } from 'react-router-dom'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
+  const [message, setMessage] = useState(null)
+  const [messageType, setMessageType] = useState(null)
+
+  const navigate = useNavigate()
+  const match = useMatch('/blogs/:id')
 
   useEffect(() => {
     blogService.getAll().then((blogs) => {
@@ -28,26 +35,89 @@ const App = () => {
     setUser(null)
     blogService.setToken(null)
     window.localStorage.removeItem('loggedBlogUser')
+    navigate('/')
   }
+
+  const deleteBlogReq = (blogObject) => {
+    blogService
+      .deleteBlog(blogObject.id)
+      .then(() => {
+        setBlogs(blogs.filter(blog => blog.id!==blogObject.id))
+        setMessage(
+          `"${blogObject.title}" by ${blogObject.author} is Removed!`,
+        )
+        setMessageType('success')
+        setTimeout(() => {
+          setMessage(null)
+          setMessageType(null)
+        }, 5000)
+        navigate('/')
+      })
+      .catch((error) => {
+        setMessage(error.response.data.error)
+        setMessageType('error')
+        setTimeout(() => {
+          setMessage(null)
+          setMessageType(null)
+        }, 5000)
+        console.log(error.response.data.error)
+      })
+  }
+
+  const addNewLike = (blogObject) => {
+    blogService
+      .likeBlog(blogObject)
+      .then((res) => {
+        setBlogs(
+          blogs
+            .map((blog) => (blog.id === res.id ? res : blog))
+            .sort((a, b) => b.likes - a.likes),
+        )
+      })
+      .catch((error) => {
+        setMessage(error.response.data.error)
+        setMessageType('error')
+        setTimeout(() => {
+          setMessage(null)
+          setMessageType(null)
+        }, 5000)
+        console.log(error.response.data.error)
+      })
+  }
+  const blog = match? blogs.find(blog => blog.id === match.params.id): null
   const padding = {
     padding: 5
   }
   return (
     <div>
-      <Router>
+      <div>
         <Link style={padding} to='/'>Blogs</Link>
         {!user &&  <Link style={padding} to='/login'>Login</Link> }
         { user && <button onClick={() => handleLogout()}>logout</button> }
+      </div>
 
-        <Routes>
-          <Route path = '/' element ={
-            <BlogList user={user} blogs={blogs} setBlogs={setBlogs} />
-          }/>
-          <Route path='/login' element={
-            <LoginForm setUser={setUser}/>
-          }/>
-        </Routes>
-      </Router>
+      <Notification
+        message={message}
+        type={messageType}
+      />
+
+      <Routes>
+        <Route path='/blogs/:id' element={
+          <Blog
+            blog={blog}
+            addNewLike={addNewLike}
+            deleteBlogReq={deleteBlogReq}
+            user = {user}
+          />
+        }
+        />
+        <Route path = '/' element ={
+          <BlogList user={user} blogs={blogs} setBlogs={setBlogs} />
+        }/>
+        <Route path='/login' element={
+          <LoginForm setUser={setUser}/>
+        }/>
+      </Routes>
     </div>
   )
 }
