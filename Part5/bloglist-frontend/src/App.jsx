@@ -5,6 +5,7 @@ import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import { BrowserRouter as Router, Routes, Route, Link, useMatch, useNavigate } from 'react-router-dom'
+import BlogForm from './components/BlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -36,6 +37,33 @@ const App = () => {
     blogService.setToken(null)
     window.localStorage.removeItem('loggedBlogUser')
     navigate('/')
+  }
+
+  const addNewBlog = (blogObject) => {
+    // blogFormRef.current.toggleVisibility()
+    blogService
+      .createBlog(blogObject)
+      .then((res) => {
+        navigate('/')
+        setBlogs(blogs.concat(res))
+        setMessageType('success')
+        setMessage(
+          `a new blog "${blogObject.title}" by ${blogObject.author} is added!`,
+        )
+        setTimeout(() => {
+          setMessage(null)
+          setMessageType(null)
+        }, 5000)
+      })
+      .catch((error) => {
+        setMessage(error.response.data.error)
+        setMessageType('error')
+        setTimeout(() => {
+          setMessage(null)
+          setMessageType(null)
+        }, 5000)
+        console.log(error.response.data.error)
+      })
   }
 
   const deleteBlogReq = (blogObject) => {
@@ -93,12 +121,13 @@ const App = () => {
       <div>
         <Link style={padding} to='/'>Blogs</Link>
         {!user &&  <Link style={padding} to='/login'>Login</Link> }
+        { user &&  <Link style={padding} to='/create'>new blog</Link> }
         { user && <button onClick={() => handleLogout()}>logout</button> }
       </div>
 
       <Notification
         message={message}
-        type={messageType}
+        messageType={messageType}
       />
 
       <Routes>
@@ -116,6 +145,9 @@ const App = () => {
         }/>
         <Route path='/login' element={
           <LoginForm setUser={setUser}/>
+        }/>
+        <Route path = '/create' element ={
+          <BlogForm createBlog={addNewBlog} />
         }/>
       </Routes>
     </div>
