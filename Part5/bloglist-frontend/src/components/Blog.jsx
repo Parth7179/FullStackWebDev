@@ -39,14 +39,14 @@ const Blog = ({ blog, addNewLike, deleteBlogReq, user }) => {
     return null
   }
   const blogOwner = user && blog.user && user.id === (blog.user.id || blog.user)
-  console.log(blog)
   return (
     <div className='blog' style={blogStyle}>
       <Notification message={message} messageType={messageType} />
 
       <h3> {blog.author}: {blog.title} </h3>
       <a href={blog.url}>{blog.url}</a> <br />
-      Likes {blog.likes} <button onClick={addLike}>Like</button> <br />
+      Likes {blog.likes}
+      { user &&  <button onClick={addLike}>Like</button> } <br />
       Added by {blog.author} <br />
       { blogOwner &&
       <button onClick={deleteBlog}>Remove</button>
