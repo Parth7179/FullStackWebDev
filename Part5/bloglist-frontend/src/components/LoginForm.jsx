@@ -1,43 +1,23 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { TextField, Button } from '@mui/material'
-import blogService from '../services/blogs/'
-import loginService from '../services/login'
-import Notification from './Notification'
 
-const LoginForm = ({ setUser }) => {
+const LoginForm = ({ handleLogin }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [message, setMessage] = useState(null)
-  const [messageType, setMessageType] = useState(null)
-  const navigate = useNavigate()
 
-
-  const handleLogin = async (event) => {
+  const handleLoginFunc = async (event) => {
     event.preventDefault()
-    try {
-      const user = await loginService.login({ username, password })
-      window.localStorage.setItem('loggedBlogUser', JSON.stringify(user))
-      blogService.setToken(user.token)
-      setUser(user)
-      navigate('/')
-      setUsername('')
-      setPassword('')
-    } catch {
-      setMessage('Wrong Credentials')
-      setMessageType('error')
-      setTimeout(() => {
-        setMessage(null)
-        setMessageType(null)
-      }, 5000)
-    }
+
+    handleLogin(username, password)
+    setUsername('')
+    setPassword('')
+
   }
 
   return(
     <div>
-      <Notification message={message} messageType={messageType} />
       <h2>Login to Application</h2>
-      <form onSubmit={handleLogin}>
+      <form onSubmit={handleLoginFunc}>
         <div>
           <TextField
             label='Username'

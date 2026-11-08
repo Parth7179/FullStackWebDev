@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
+import { Container, AppBar, Toolbar, Button } from '@mui/material'
 import blogService from './services/blogs'
+import loginService from './services/login'
 import BlogList from './components/BlogList'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
@@ -10,8 +12,7 @@ import BlogForm from './components/BlogForm'
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [message, setMessage] = useState(null)
-  const [messageType, setMessageType] = useState(null)
+  const [notification, setNotification] = useState(null)
 
   const navigate = useNavigate()
   const match = useMatch('/blogs/:id')
@@ -32,35 +33,54 @@ const App = () => {
     }
   }, [])
 
+  const handleLogin = async ( username, password) => {
+    event.preventDefault()
+    try {
+      const user = await loginService.login({ username, password })
+      window.localStorage.setItem('loggedBlogUser', JSON.stringify(user))
+      blogService.setToken(user.token)
+      setUser(user)
+      setNotification({ text:'Logged in!', type:'success' })
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
+      navigate('/')
+
+    } catch {
+      setNotification({ text:'Wrong Credentials!', type:'error' })
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
+    }
+  }
+
   const handleLogout = () => {
     setUser(null)
     blogService.setToken(null)
     window.localStorage.removeItem('loggedBlogUser')
+    setNotification({ text:'Logged out!', type:'success' })
+    setTimeout(() => {
+      setNotification(null)
+    }, 5000)
     navigate('/')
   }
 
   const addNewBlog = (blogObject) => {
-    // blogFormRef.current.toggleVisibility()
     blogService
       .createBlog(blogObject)
       .then((res) => {
         navigate('/')
         setBlogs(blogs.concat(res))
-        setMessageType('success')
-        setMessage(
-          `a new blog "${blogObject.title}" by ${blogObject.author} is added!`,
-        )
+        setNotification({ text:`a new blog "${blogObject.title}" by ${blogObject.author} is added!`, type:'success' })
         setTimeout(() => {
-          setMessage(null)
-          setMessageType(null)
+          setNotification(null)
         }, 5000)
       })
       .catch((error) => {
-        setMessage(error.response.data.error)
-        setMessageType('error')
+
+        setNotification({ text:`${error.response.data.error}`, type:'error' })
         setTimeout(() => {
-          setMessage(null)
-          setMessageType(null)
+          setNotification(null)
         }, 5000)
         console.log(error.response.data.error)
       })
@@ -71,22 +91,16 @@ const App = () => {
       .deleteBlog(blogObject.id)
       .then(() => {
         setBlogs(blogs.filter(blog => blog.id!==blogObject.id))
-        setMessage(
-          `"${blogObject.title}" by ${blogObject.author} is Removed!`,
-        )
-        setMessageType('success')
+        setNotification({ text:`"${blogObject.title}" by ${blogObject.author} is Removed!`, type:'success' })
         setTimeout(() => {
-          setMessage(null)
-          setMessageType(null)
+          setNotification(null)
         }, 5000)
         navigate('/')
       })
       .catch((error) => {
-        setMessage(error.response.data.error)
-        setMessageType('error')
+        setNotification({ text:`${error.response.data.error}`, type:'error' })
         setTimeout(() => {
-          setMessage(null)
-          setMessageType(null)
+          setNotification(null)
         }, 5000)
         console.log(error.response.data.error)
       })
@@ -103,32 +117,28 @@ const App = () => {
         )
       })
       .catch((error) => {
-        setMessage(error.response.data.error)
-        setMessageType('error')
+        setNotification({ text:`${error.response.data.error}`, type:'error' })
         setTimeout(() => {
-          setMessage(null)
-          setMessageType(null)
+          setNotification(null)
         }, 5000)
         console.log(error.response.data.error)
       })
   }
+  const style = { '&:hover': { bgcolor: 'rgba(255,255,255,0.3)' } }
   const blog = match? blogs.find(blog => blog.id === match.params.id): null
-  const padding = {
-    padding: 5
-  }
   return (
-    <div style={{ margin: 10 }}>
-      <div>
-        <Link style={padding} to='/'>Blogs</Link>
-        {!user &&  <Link style={padding} to='/login'>Login</Link> }
-        { user &&  <Link style={padding} to='/create'>new blog</Link> }
-        { user && <button onClick={() => handleLogout()}>logout</button> }
-      </div>
+    <Container style={{ margin: 10 }}>
+      <AppBar position='static'>
+        <Toolbar>
+          <Button color='inherit' component= {Link} to='/' sx={style} >Blogs</Button>
+          {!user &&  <Button color='inherit' component= {Link} to='/login' sx={style} >Login</Button>}
+          { user &&  <Button color='inherit' component= {Link} to='/create' sx={style} >new blog</Button>}
+          { user && <Button color='inherit' onClick={() => handleLogout()} sx={style} >logout</Button>}
+        </Toolbar>
+      </AppBar>
 
-      <Notification
-        message={message}
-        messageType={messageType}
-      />
+
+      <Notification notification={notification} />
 
       <Routes>
         <Route path='/blogs/:id' element={
@@ -144,13 +154,13 @@ const App = () => {
           <BlogList user={user} blogs={blogs} setBlogs={setBlogs} />
         }/>
         <Route path='/login' element={
-          <LoginForm setUser={setUser}/>
+          <LoginForm setUser={setUser} handleLogin={handleLogin}/>
         }/>
         <Route path = '/create' element ={
           <BlogForm createBlog={addNewBlog} />
         }/>
       </Routes>
-    </div>
+    </Container>
   )
 }
 

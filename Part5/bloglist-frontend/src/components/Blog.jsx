@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import Notification from './Notification'
 const Blog = ({ blog, addNewLike, deleteBlogReq, user }) => {
   const navigate = useNavigate()
-  const [message, setMessage] = useState(null)
-  const [messageType, setMessageType] = useState(null)
+  const [notification, setNotification] = useState(null)
 
   const blogStyle = {
     paddingTop: 10,
@@ -14,11 +13,9 @@ const Blog = ({ blog, addNewLike, deleteBlogReq, user }) => {
 
   const addLike = (event) => {
     if(!user){
-      setMessage('Please Login in first!')
-      setMessageType('error')
+      setNotification({ text:'Please Login in first!', type:'error' })
       setTimeout(() => {
-        setMessage(null)
-        setMessageType(null)
+        setNotification(null)
       }, 5000)
       return
     }
@@ -41,7 +38,7 @@ const Blog = ({ blog, addNewLike, deleteBlogReq, user }) => {
   const blogOwner = user && blog.user && user.id === (blog.user.id || blog.user)
   return (
     <div className='blog' style={blogStyle}>
-      <Notification message={message} messageType={messageType} />
+      <Notification notification={notification}/>
 
       <h3> {blog.author}: {blog.title} </h3>
       <a href={blog.url}>{blog.url}</a> <br />
