@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { TextField, Button } from '@mui/material'
 import blogService from '../services/blogs/'
 import loginService from '../services/login'
 import Notification from './Notification'
@@ -38,28 +39,24 @@ const LoginForm = ({ setUser }) => {
       <h2>Login to Application</h2>
       <form onSubmit={handleLogin}>
         <div>
-          <label>
-            Username
-            <input
-              type='text'
-              value={username}
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </label>
+          <TextField
+            label='Username'
+            value={username}
+            onChange={({ target }) => setUsername(target.value)}
+            style={{ margin: 5 }}
+          />
         </div>
 
         <div>
-          <label>
-            Password
-            <input
-              type='password'
-              value={password}
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </label>
+          <TextField
+            label='Password'
+            type='password'
+            value={password}
+            onChange={({ target }) => setPassword(target.value)}
+            style={{ margin: 5 }}
+          />
         </div>
-
-        <button type='submit'>Submit</button>
+        <Button type='submit' variant='contained' style={{ margin:10 }}>Submit</Button>
       </form>
     </div>
   )

@@ -117,7 +117,7 @@ const App = () => {
     padding: 5
   }
   return (
-    <div>
+    <div style={{ margin: 10 }}>
       <div>
         <Link style={padding} to='/'>Blogs</Link>
         {!user &&  <Link style={padding} to='/login'>Login</Link> }
